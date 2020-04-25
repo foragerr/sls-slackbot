@@ -6,12 +6,21 @@ provider:
   stage: ${opt:stage, 'dev'}  # default to dev if not specified on command-line
   region: us-east-1
 
-  iamRoleStatements:
-    - Effect: Allow
+  iamRoleStatements: 
+    - 
       Action: secretsmanager:GetSecretValue
+      Effect: Allow
       Resource: 
-        - arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:botty-api-key-QaEzuG
-        - arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:botty-signing-key-bHHrH1
+        - "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:botty-api-key-QaEzuG"
+        - "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:botty-signing-key-bHHrH1"
+    - 
+      Action: 
+        - sqs:ReceiveMessage
+        - sqs:GetQueueAttributes
+        - sqs:GetQueueUrl
+      Effect: Allow
+      Resource: 
+        - "arn:aws:sqs:#{AWS::Region}:#{AWS::AccountId}:deployqueue.fifo"
 
 functions:
   hello:

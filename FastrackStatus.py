@@ -1,4 +1,5 @@
 import json
+import sqs
 
 class FastrackStatus:
     """Constructs a fastrack status message"""
@@ -80,10 +81,7 @@ class FastrackStatus:
 
     @staticmethod
     def _get_fastrack_queue_items(zone :str):
-        return [
-            {'service':'ServiceA', 'versionfrom': 'v1.0.0', 'versionto': 'v2.0.0', 'requestor': 'John Aoe'},
-            {'service':'ServiceB', 'versionfrom': 'v1.0.0', 'versionto': 'v2.0.0', 'requestor': 'John Boe'}
-        ]
+        return sqs.peek_messages()
 
     def _get_queue_items_block(self):
         queue_items = self._get_fastrack_queue_items(self.zone)
@@ -95,7 +93,7 @@ class FastrackStatus:
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": f"> *{item['service']}* | {item['versionfrom']}  *->*  {item['versionto']} | <http://www.foo.com | Changelog> | {item['requestor']}"
+                        "text": f"> *{item['name']}* | {item['versionfrom']}  *->*  {item['versionto']} | <http://www.foo.com | Changelog> | {item['requestor']}"
                     }
                 }
             )
